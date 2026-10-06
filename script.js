@@ -19,6 +19,7 @@ const notesList    = document.querySelector('#notes-list');
 const noteCount    = document.querySelector('#note-count');
 const errorMessage = document.querySelector('#error-message');
 const searchInput  = document.querySelector('#search-input');
+const clearBtn     = document.querySelector('#clear-btn');
 
 
 /* ── SECTION 2: THE NOTES ARRAY ──────────────────
@@ -294,6 +295,26 @@ noteForm.addEventListener('submit', function(event) {
 searchInput.addEventListener('input', function() {
   render();   /* re-render with the new query — no save needed */
 });
+
+
+/* ── BONUS: CLEAR ALL ────────────────────────────
+   confirm() opens a browser dialog with OK/Cancel.
+   It returns true if the user clicks OK, and
+   false if they click Cancel or close the dialog.
+   We only wipe the notes if they confirm.
+   Without the if-check, clicking Cancel would
+   still delete everything — a bad user experience. */
+
+function clearAll() {
+  if (confirm('Delete all notes?')) {
+    notes = [];          /* empty the array        */
+    saveNotes();         /* overwrite localStorage  */
+    render();            /* redraw the empty list   */
+    searchInput.value = ''; /* also clear search   */
+  }
+}
+
+clearBtn.addEventListener('click', clearAll);
 
 
 /* ── SECTION 8: STARTUP — LOAD SAVED NOTES ───────
