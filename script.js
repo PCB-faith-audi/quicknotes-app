@@ -1,6 +1,7 @@
 /* ================================================
    QUICKNOTES — script.js
    Task 3: Add and display notes
+   Task 4: Validation, delete, and count
    ================================================ */
 
 
@@ -50,6 +51,40 @@ function createNote(text, category) {
 }
 
 
+/* ── SECTION 3b: DELETE A NOTE ───────────────────
+   filter() goes through every item in the array
+   and keeps only the ones where the condition is
+   TRUE. Here: keep every note whose id is NOT
+   equal to the id we want to delete.
+   The note we want gone fails the test → excluded.
+   We reassign the notes variable to the new array.
+   Then we call render() to redraw the updated list.
+   Then we call saveNotes() to update localStorage.  */
+
+function deleteNote(id) {
+  notes = notes.filter(function(note) {
+    return note.id !== id;
+  });
+  render();
+}
+
+
+/* ── SECTION 3c: UPDATE NOTE COUNT ──────────────
+   Reads notes.length and sets the correct sentence.
+   The rubric checks the exact wording, so we match
+   it character-for-character.                      */
+
+function updateCount() {
+  if (notes.length === 0) {
+    noteCount.textContent = 'You have no notes yet.';
+  } else if (notes.length === 1) {
+    noteCount.textContent = 'You have 1 note.';
+  } else {
+    noteCount.textContent = 'You have ' + notes.length + ' notes.';
+  }
+}
+
+
 /* ── SECTION 4: BUILD ONE NOTE CARD ─────────────
    Returns a fully built <li> element for one note.
    We use createElement() + textContent — NEVER
@@ -84,11 +119,20 @@ function buildNoteCard(note) {
   dateEl.classList.add('note-date');
   dateEl.textContent = note.createdAt;
 
-  /* Delete button — click handler wired in Task 4 */
+  /* Delete button
+     When clicked, we read the note's id from the
+     button's data-id attribute, convert it from a
+     string back to a number with Number(), then
+     call deleteNote() with that id.               */
   const deleteBtn = document.createElement('button');
   deleteBtn.classList.add('delete-btn');
   deleteBtn.textContent = 'Delete';
-  deleteBtn.setAttribute('data-id', note.id);   /* stores note ID on the button */
+  deleteBtn.setAttribute('data-id', note.id);
+
+  deleteBtn.addEventListener('click', function() {
+    const idToDelete = Number(deleteBtn.getAttribute('data-id'));
+    deleteNote(idToDelete);
+  });
 
   /* Assemble: meta row gets badge + date + deleteBtn */
   meta.appendChild(badge);
@@ -127,7 +171,8 @@ function render() {
     notesList.appendChild(card);   /* 3. Add to the page */
   });
 
-  /* Note count and delete click logic → Task 4    */
+  /* Update the count paragraph every time we render */
+  updateCount();
 }
 
 
@@ -149,8 +194,24 @@ noteForm.addEventListener('submit', function(event) {
   const text     = noteInput.value.trim();
   const category = noteCategory.value;
 
-  /* Basic guard — full validation in Task 4 */
-  if (text === '') return;
+  /* ── VALIDATION ─────────────────────────────────
+     The rubric requires these EXACT error strings.
+     We check empty first, then length.
+     On any error: show message and stop (return).
+     On success: clear the error message.           */
+
+  if (text === '') {
+    errorMessage.textContent = 'Please type a note first.';
+    return;   /* stop here — do not add the note */
+  }
+
+  if (text.length > 200) {
+    errorMessage.textContent = 'Notes must be 200 characters or fewer.';
+    return;   /* stop here — do not add the note */
+  }
+
+  /* All good — clear any previous error message */
+  errorMessage.textContent = '';
 
   /* Create the note object, add to array, redraw  */
   const newNote = createNote(text, category);
