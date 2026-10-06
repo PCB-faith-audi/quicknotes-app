@@ -1,0 +1,384 @@
+/* ================================================
+   QUICKNOTES — style.css
+   Task 2: Layout, cards, form, categories, responsive
+   ================================================ */
+
+/* ── 1. GOOGLE FONT IMPORT ───────────────────────
+   We pull in "Inter" — a clean, modern font used
+   by many real apps (Figma, Linear, Notion).       */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ── 2. RESET ────────────────────────────────────
+   border-box means: padding/border are INCLUDED
+   in the element's total width. Without this,
+   a 200px box with 20px padding becomes 240px —
+   which breaks layouts. This one rule prevents
+   a whole category of sizing bugs.                 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── 3. BODY ─────────────────────────────────────
+   Sets the overall page background, font, and
+   a light grey that makes the white cards pop.     */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f0f2f5;
+  color: #1a1a2e;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ── 4. HEADER ───────────────────────────────────
+   Deep blue-purple gradient — gives the app a
+   branded, premium feel right away.                */
+header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: #ffffff;
+  text-align: center;
+  padding: 2.5rem 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+header h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.4rem;
+}
+
+header p {
+  font-size: 1rem;
+  color: #a8b2d8;
+  font-weight: 400;
+}
+
+/* ── 5. MAIN ─────────────────────────────────────
+   Centers everything and caps the width at 700px.
+   margin: 0 auto = left/right margins auto =
+   the browser splits leftover space equally on
+   both sides → perfectly centered.                 */
+main {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── 6. SECTION CARDS ───────────────────────────
+   Each <section> looks like a floating white card.
+   box-shadow gives the subtle "lifted" effect.     */
+section {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+}
+
+section h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #0f3460;
+  margin-bottom: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── 7. FORM — FLEXBOX LAYOUT ────────────────────
+   flex-wrap: wrap  lets children drop to the next
+   line if they don't all fit on one row.
+   align-items: flex-end aligns the button to the
+   bottom so it lines up with the inputs.           */
+#note-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+/* Each label+input pair sits in its own column.
+   flex: 1 1 180px means: grow to fill space,
+   shrink if needed, but never go below 180px.      */
+#note-form label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* A wrapper div isn't needed — we target the
+   input and select directly.                       */
+#note-input {
+  flex: 1 1 180px;
+  height: 44px;
+  padding: 0 0.9rem;
+  border: 2px solid #e0e4ef;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: #1a1a2e;
+  background: #f8f9ff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+#note-input:focus {
+  border-color: #0f3460;
+  box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.12);
+  background: #ffffff;
+}
+
+#note-category {
+  flex: 0 1 140px;
+  height: 44px;
+  padding: 0 0.9rem;
+  border: 2px solid #e0e4ef;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: #1a1a2e;
+  background: #f8f9ff;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23555' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+}
+
+#note-category:focus {
+  border-color: #0f3460;
+  box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.12);
+}
+
+/* ── 8. BUTTONS ──────────────────────────────────
+   transition makes the colour change animate
+   smoothly over 0.2 seconds instead of snapping.  */
+button {
+  height: 44px;
+  padding: 0 1.4rem;
+  background-color: #0f3460;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  white-space: nowrap;
+}
+
+/* :hover fires when the mouse is over the button.
+   The rubric requires a clearly visible hover.    */
+button:hover {
+  background-color: #16213e;
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0px);
+}
+
+/* ── 9. ERROR MESSAGE ────────────────────────────
+   Starts empty. When JS adds text, this makes
+   it immediately obvious with red + bold styling.  */
+#error-message {
+  color: #d32f2f;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: 0.75rem;
+  min-height: 1.2em;
+}
+
+/* ── 10. SEARCH INPUT ────────────────────────────*/
+#search-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 0.9rem;
+  border: 2px solid #e0e4ef;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: #1a1a2e;
+  background: #f8f9ff;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+#search-input:focus {
+  border-color: #0f3460;
+  box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.12);
+  background: #ffffff;
+}
+
+/* ── 11. NOTE COUNT ─────────────────────────────*/
+#note-count {
+  font-size: 0.85rem;
+  color: #777;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+/* ── 12. NOTES LIST ─────────────────────────────
+   Remove the default bullet-point styling that
+   <ul> adds — our cards are the visual indicator.  */
+#notes-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* ── 13. NOTE CARDS ──────────────────────────────
+   Each <li> is a card. The left border colour
+   changes per category (see rules 14–16).
+   border-left is the coloured category stripe.     */
+#notes-list li {
+  padding: 1rem 1.1rem;
+  border: 1px solid #e8ecf4;
+  border-left: 5px solid #ccc;  /* overridden by category classes */
+  border-radius: 10px;
+  margin: 0;
+  background-color: #fafbff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  transition: box-shadow 0.2s ease;
+}
+
+#notes-list li:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Note text — the main content */
+.note-text {
+  font-size: 1rem;
+  color: #1a1a2e;
+  font-weight: 500;
+}
+
+/* Row holding category badge + date + delete button */
+.note-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+/* Small category badge pill */
+.note-category-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  background-color: #e8ecf4;
+  color: #555;
+}
+
+/* Timestamp */
+.note-date {
+  font-size: 0.78rem;
+  color: #999;
+  margin-right: auto; /* pushes delete button to the far right */
+}
+
+/* Delete button — smaller than the Add button */
+.delete-btn {
+  height: 30px;
+  padding: 0 0.75rem;
+  background-color: #fff0f0;
+  color: #d32f2f;
+  border: 1px solid #f5c6c6;
+  border-radius: 7px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.delete-btn:hover {
+  background-color: #d32f2f;
+  color: #ffffff;
+}
+
+/* ── 14. CATEGORY: PERSONAL — Teal ─────────────*/
+.category-personal {
+  border-left-color: #009688;
+}
+
+.category-personal .note-category-badge {
+  background-color: #e0f5f3;
+  color: #00695c;
+}
+
+/* ── 15. CATEGORY: WORK — Dark Red ─────────────*/
+.category-work {
+  border-left-color: #c62828;
+}
+
+.category-work .note-category-badge {
+  background-color: #fdecea;
+  color: #b71c1c;
+}
+
+/* ── 16. CATEGORY: STUDY — Blue ─────────────── */
+.category-study {
+  border-left-color: #1565c0;
+}
+
+.category-study .note-category-badge {
+  background-color: #e3f0fd;
+  color: #0d47a1;
+}
+
+/* ── 17. FOOTER ─────────────────────────────── */
+footer {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  color: #aaa;
+  font-size: 0.8rem;
+}
+
+/* ── 18. RESPONSIVE — MOBILE (max-width: 600px) ─
+   At small screen widths, the form controls
+   stack vertically (each takes full width).
+   This is required by the rubric.                 */
+@media (max-width: 600px) {
+
+  header h1 {
+    font-size: 1.8rem;
+  }
+
+  main {
+    margin: 1rem auto;
+  }
+
+  section {
+    padding: 1.25rem;
+  }
+
+  /* Stack all form children vertically */
+  #note-form {
+    flex-direction: column;
+  }
+
+  /* Make every input full width on mobile */
+  #note-input,
+  #note-category,
+  #note-form button {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+}
