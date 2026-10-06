@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuickNotes</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <h1>QuickNotes</h1>
+    <p>Capture your thoughts, instantly.</p>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main>
+
+    <!-- SECTION 1: Add a Note -->
+    <section>
+      <h2>Add a Note</h2>
+
+      <form id="note-form">
+
+        <label for="note-input">Note</label>
+        <input
+          id="note-input"
+          type="text"
+          placeholder="Write your note here..."
+        />
+
+        <label for="note-category">Category</label>
+        <select id="note-category">
+          <option value="Personal">Personal</option>
+          <option value="Work">Work</option>
+          <option value="Study">Study</option>
+        </select>
+
+        <button type="submit">Add Note</button>
+
+      </form>
+
+      <!-- Validation errors will appear here -->
+      <p id="error-message"></p>
+
+    </section>
+
+    <!-- SECTION 2: Your Notes -->
+    <section>
+      <h2>Your Notes</h2>
+
+      <input
+        id="search-input"
+        type="text"
+        placeholder="Search notes..."
+      />
+
+      <p id="note-count">You have no notes yet.</p>
+
+      <!-- Notes will be added here by JavaScript -->
+      <ul id="notes-list"></ul>
+
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <p>QuickNotes &copy; 2025</p>
+  </footer>
+
+</body>
+
+</html>
