@@ -2,6 +2,7 @@
    QUICKNOTES — script.js
    Task 3: Add and display notes
    Task 4: Validation, delete, and count
+   Task 5: localStorage persistence and search
    ================================================ */
 
 
@@ -27,6 +28,37 @@ const searchInput  = document.querySelector('#search-input');
    later when loading from localStorage (Task 5).  */
 
 let notes = [];
+
+
+/* ── SECTION 2b: LOCALSTORAGE — SAVE & LOAD ──────
+   localStorage is a key-value store built into
+   every browser. It persists even after the tab
+   is closed or the page is refreshed.
+
+   SAVE:
+   localStorage can only store STRINGS — not arrays
+   or objects. JSON.stringify() converts our notes
+   array into a JSON string like:
+   '[{"id":123,"text":"Buy milk",...}]'
+   We store it under the key 'quicknotes'.
+
+   LOAD:
+   JSON.parse() converts that JSON string back into
+   a real JavaScript array of objects.
+   We use || [] as a safety net: if nothing has
+   been saved yet, localStorage.getItem() returns
+   null — and JSON.parse(null) returns null too.
+   The || [] means: "if the result is falsy, use
+   an empty array instead." Prevents a crash.      */
+
+function saveNotes() {
+  localStorage.setItem('quicknotes', JSON.stringify(notes));
+}
+
+function loadNotes() {
+  const saved = localStorage.getItem('quicknotes');
+  notes = JSON.parse(saved) || [];
+}
 
 
 /* ── SECTION 3: MAKE A NOTE OBJECT ──────────────
@@ -65,6 +97,7 @@ function deleteNote(id) {
   notes = notes.filter(function(note) {
     return note.id !== id;
   });
+  saveNotes();   /* persist the updated array immediately */
   render();
 }
 
@@ -162,16 +195,42 @@ function buildNoteCard(note) {
 
 function render() {
 
-  /* 1. Clear the list */
-  notesList.innerHTML = '';
+  /* 1. Read the current search term and lowercase it
+        so comparisons are case-insensitive.          */
+  const query = searchInput.value.trim().toLowerCase();
 
-  /* 2. Loop through every note and build a card */
-  notes.forEach(function(note) {
-    const card = buildNoteCard(note);
-    notesList.appendChild(card);   /* 3. Add to the page */
+  /* 2. Filter notes[] into a temporary display list.
+        If query is empty, every note passes the test.
+        If query has text, only notes whose text
+        contains the query string are kept.
+        The original notes[] array is NEVER modified — 
+        this is just a temporary view.                */
+  const filtered = notes.filter(function(note) {
+    return note.text.toLowerCase().includes(query);
   });
 
-  /* Update the count paragraph every time we render */
+  /* 3. Clear the list */
+  notesList.innerHTML = '';
+
+  /* 4. If nothing matched the search, show a message */
+  if (filtered.length === 0 && query !== '') {
+    const li = document.createElement('li');
+    li.style.textAlign  = 'center';
+    li.style.color      = '#999';
+    li.style.padding    = '1rem';
+    li.style.listStyle  = 'none';
+    li.textContent = 'No notes match your search.';
+    notesList.appendChild(li);
+
+  } else {
+    /* 5. Build a card for each matching note */
+    filtered.forEach(function(note) {
+      const card = buildNoteCard(note);
+      notesList.appendChild(card);
+    });
+  }
+
+  /* Update the count (always based on the FULL array) */
   updateCount();
 }
 
@@ -213,13 +272,35 @@ noteForm.addEventListener('submit', function(event) {
   /* All good — clear any previous error message */
   errorMessage.textContent = '';
 
-  /* Create the note object, add to array, redraw  */
+  /* Create the note object, add to array, save, redraw */
   const newNote = createNote(text, category);
-  notes.push(newNote);     /* push() adds to end of array */
+  notes.push(newNote);
 
+  saveNotes();   /* save to localStorage before rendering */
   render();
 
   /* Clear the input so user can type the next note */
   noteInput.value = '';
-  noteInput.focus();   /* move cursor back to the input  */
+  noteInput.focus();
 });
+
+
+/* ── SECTION 7: SEARCH EVENT LISTENER ────────────
+   'input' fires every time the user types a
+   character, pastes text, or deletes a character.
+   It is more immediate than 'change' (which only
+   fires when the field loses focus).              */
+
+searchInput.addEventListener('input', function() {
+  render();   /* re-render with the new query — no save needed */
+});
+
+
+/* ── SECTION 8: STARTUP — LOAD SAVED NOTES ───────
+   This runs once, immediately when the page loads.
+   loadNotes() pulls notes out of localStorage.
+   render() then draws whatever was found.
+   Result: notes are still there after a refresh.  */
+
+loadNotes();
+render();
